@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..500;1,6..72,200..400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; padding: 0; background: #07080B; }
+  body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  * { box-sizing: border-box; }
+  ::selection { background: rgba(230,163,90,0.28); }
+  a { color: #E6A35A; text-decoration: none; border-bottom: 1px solid rgba(230,163,90,0.35); }
+  a:hover { color: #FFE0AE; border-bottom-color: rgba(255,224,174,0.7); }
+  button { font-family: "IBM Plex Mono", ui-monospace, monospace; -webkit-tap-highlight-color: transparent; }
+  @keyframes riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes breathe { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
+</style>
+<script type="module" src="harmonic-stage.js"></script>
+<script type="module" src="plates.js"></script>
+</helmet>
+
+<div ref="{{ rootRef }}" style="background:#07080B;color:#EAE5DB;font-family:'Newsreader',Georgia,serif;min-height:100vh;overflow-x:hidden">
+
+  <audio ref="{{ audioRef }}" src="audio/prelude.mp3" preload="auto" style="display:none"></audio>
+
+  <section data-screen-label="Stage" style="position:relative;height:100svh;min-height:540px;overflow:hidden">
+    <harmonic-stage ref="{{ stageRef }}" style="position:absolute;inset:0;width:100%;height:100%"></harmonic-stage>
+    <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 78% 62% at 50% 44%, rgba(7,8,11,0) 42%, rgba(7,8,11,0.55) 78%, rgba(7,8,11,0.9) 100%)"></div>
+
+    <div style="position:absolute;top:0;left:0;right:0;padding:clamp(18px,3.2vw,44px);pointer-events:none;display:grid;gap:clamp(12px,1.6vw,20px);opacity:{{ heroOp }};transition:opacity 900ms ease">
+      <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(9px,0.75vw,11px);font-weight:400;letter-spacing:0.2em;text-transform:uppercase;color:rgba(234,229,219,0.58)">Rachmaninoff &nbsp;·&nbsp; Op. 3 № 2 &nbsp;·&nbsp; 1892 &nbsp;·&nbsp; played by Jan Lisiecki</div>
+      <h1 style="margin:0;font-weight:200;font-size:clamp(40px,8.2vw,112px);line-height:0.94;letter-spacing:-0.028em;max-width:15ch">The bell, <em style="font-style:italic;font-weight:200;color:#E6A35A">measured</em></h1>
+      <p style="margin:0;max-width:47ch;font-weight:300;font-size:clamp(14px,1.45vw,19px);line-height:1.6;color:rgba(234,229,219,0.6);text-wrap:pretty">Four minutes of C♯ minor resolved into geometry. Twelve strings arranged by fifths, six octave rings, and a bead for each of the 1,710 notes in the score, placed at its true register and timed to this recording.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;pointer-events:auto;margin-top:clamp(4px,1vw,10px)">
+        <button onClick="{{ toggle }}" style="display:inline-flex;align-items:center;gap:12px;min-height:50px;padding:0 22px;background:rgba(230,163,90,0.1);border:1px solid rgba(230,163,90,0.5);border-radius:2px;color:#FFE0AE;font-size:11px;font-weight:400;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(6px)"><span style="font-size:13px">{{ playGlyph }}</span>{{ playLabel }}</button>
+        <a href="#analysis" style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;border-bottom-color:rgba(230,163,90,0.25)">↓ the measurements</a>
+      </div>
+    </div>
+
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute;top:clamp(18px,3.2vw,44px);right:clamp(18px,3.2vw,44px);width:212px;display:grid;gap:9px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.06em;color:rgba(234,229,219,0.5);border-left:1px solid rgba(234,229,219,0.12);padding-left:14px;pointer-events:none">
+        <div style="display:flex;justify-content:space-between;gap:10px"><span>SECTION</span><span ref="{{ outSection }}" style="color:#FFE0AE;text-align:right">I · Lento</span></div>
+        <div style="display:flex;justify-content:space-between;gap:10px"><span>CHORD</span><span ref="{{ outChord }}" style="color:rgba(234,229,219,0.9)">—</span></div>
+        <div style="display:flex;justify-content:space-between;gap:10px"><span>LOUDNESS</span><span ref="{{ outLoud }}" style="color:rgba(234,229,219,0.9)">0.00</span></div>
+        <div style="display:flex;justify-content:space-between;gap:10px"><span>ELAPSED</span><span ref="{{ outFrac }}" style="color:rgba(234,229,219,0.9)">0.0 %</span></div>
+        <div ref="{{ outPhi }}" style="color:rgba(230,163,90,0.75);min-height:14px"></div>
+      </div>
+    </sc-if>
+
+    <div style="position:absolute;left:0;right:0;bottom:0;padding:clamp(10px,1.8vw,20px) clamp(12px,2.4vw,28px) clamp(12px,2vw,22px);display:flex;flex-direction:column;gap:clamp(8px,1.2vw,14px);background:linear-gradient(to top, rgba(7,8,11,0.95), rgba(7,8,11,0.7) 52%, rgba(7,8,11,0) 100%)">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:clamp(7px,1vw,12px)">
+        <button onClick="{{ toggle }}" style="width:44px;height:44px;flex:none;display:grid;place-items:center;background:rgba(255,224,174,0.08);border:1px solid rgba(255,224,174,0.4);border-radius:50%;color:#FFE0AE;font-size:12px;cursor:pointer">{{ playGlyph }}</button>
+        <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12px;letter-spacing:0.04em;color:rgba(234,229,219,0.9);min-width:96px"><span ref="{{ outTime }}">0:00</span><span style="color:rgba(234,229,219,0.35)"> / 4:14</span></div>
+        <button onClick="{{ prevStrike }}" style="min-height:36px;padding:0 10px;background:none;border:1px solid rgba(234,229,219,0.16);border-radius:2px;color:rgba(234,229,219,0.7);font-size:10px;letter-spacing:0.12em;cursor:pointer">◂ MOTIF</button>
+        <button onClick="{{ nextStrike }}" style="min-height:36px;padding:0 10px;background:none;border:1px solid rgba(234,229,219,0.16);border-radius:2px;color:rgba(234,229,219,0.7);font-size:10px;letter-spacing:0.12em;cursor:pointer">MOTIF ▸</button>
+        <button onClick="{{ toggleIsolate }}" style="min-height:36px;padding:0 11px;background:rgba(230,163,90,0.07);border:1px solid rgba(230,163,90,0.42);border-radius:2px;color:#E6A35A;font-size:10px;letter-spacing:0.12em;cursor:pointer;opacity:{{ isoOp }}">ISOLATE BELL BAND</button>
+        <div style="flex:1 1 20px"></div>
+        <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ toggleChips }}" style="min-height:36px;padding:0 11px;background:none;border:1px solid rgba(234,229,219,0.16);border-radius:2px;color:rgba(234,229,219,0.7);font-size:10px;letter-spacing:0.14em;cursor:pointer">{{ chipsGlyph }}</button>
+        </sc-if>
+        <sc-if value="{{ showChips }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <button onClick="{{ tField }}" style="min-height:36px;padding:0 10px;background:none;border:1px solid rgba(234,229,219,0.16);border-radius:2px;color:rgba(234,229,219,0.8);font-size:10px;letter-spacing:0.14em;cursor:pointer;opacity:{{ opField }}">FIELD</button>
+          <button onClick="{{ tBell }}" style="min-height:36px;padding:0 10px;background:none;border:1px solid rgba(234,229,219,0.16);border-radius:2px;color:rgba(234,229,219,0.8);font-size:10px;letter-spacing:0.14em;cursor:pointer;opacity:{{ opBell }}">BELL</button>
+          <button onClick="{{ tFifths }}" style="min-height:36px;padding:0 10px;background:none;border:1px solid rgba(234,229,219,0.16);border-radius:2px;color:rgba(234,229,219,0.8);font-size:10px;letter-spacing:0.14em;cursor:pointer;opacity:{{ opFifths }}">FIFTHS</button>
+          <button onClick="{{ tChord }}" style="min-height:36px;padding:0 10px;background:none;border:1px solid rgba(234,229,219,0.16);border-radius:2px;color:rgba(234,229,219,0.8);font-size:10px;letter-spacing:0.14em;cursor:pointer;opacity:{{ opChord }}">CHORD</button>
+          <button onClick="{{ tHelix }}" style="min-height:36px;padding:0 10px;background:none;border:1px solid rgba(234,229,219,0.16);border-radius:2px;color:rgba(234,229,219,0.8);font-size:10px;letter-spacing:0.14em;cursor:pointer;opacity:{{ opHelix }}">HELIX</button>
+          <button onClick="{{ tTrails }}" style="min-height:36px;padding:0 10px;background:none;border:1px solid rgba(234,229,219,0.16);border-radius:2px;color:rgba(234,229,219,0.8);font-size:10px;letter-spacing:0.14em;cursor:pointer;opacity:{{ opTrails }}">TRAILS</button>
+          <button onClick="{{ resetCam }}" style="min-height:36px;padding:0 10px;background:none;border:1px solid rgba(234,229,219,0.16);border-radius:2px;color:rgba(234,229,219,0.55);font-size:10px;letter-spacing:0.14em;cursor:pointer">RESET VIEW</button>
+        </div>
+        </sc-if>
+      </div>
+      <viz-plate kind="transport" style="display:block;width:100%;height:clamp(58px,8.5vh,82px);border:1px solid rgba(234,229,219,0.1);border-radius:2px;overflow:hidden"></viz-plate>
+    </div>
+  </section>
+
+  <div id="analysis" style="max-width:1200px;margin:0 auto;padding:clamp(64px,10vw,150px) clamp(20px,5vw,52px) clamp(80px,10vw,160px)">
+
+    <header style="display:grid;gap:clamp(16px,2vw,24px);max-width:64ch;margin-bottom:clamp(20px,3vw,34px)">
+      <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:rgba(230,163,90,0.8)">Method</div>
+      <h2 style="margin:0;font-weight:200;font-size:clamp(26px,3.9vw,52px);line-height:1.08;letter-spacing:-0.02em">Seven measurements taken from the sound alone</h2>
+      <p style="margin:0;font-weight:300;font-size:clamp(15px,1.35vw,19px);line-height:1.66;color:rgba(234,229,219,0.62);text-wrap:pretty">Two sources, kept apart. The <em>sound</em> gives loudness and attack times: a 2,048-point Fourier transform sliding at 23.44 frames a second, 5,974 windows, attacks picked from spectral flux. The <em>notes</em> come from the score — a Duo-Art piano-roll transcription of Op. 3 № 2, 1,710 notes, aligned to this performance by dynamic time warping and then snapped to its detected attacks; 79 % of its chords land within 100 ms of a real one. Nothing on this page infers a pitch from a spectrum, so no phantom harmony can appear. Every plate is live: drag it to move the music, and the MOTIF buttons step through the twenty places where the bell figure — A, G♯, C♯ — returns in the lowest voice.</p>
+    </header>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;margin-bottom:clamp(44px,6vw,86px)">
+        <div style="background:#07080B;box-shadow:0 0 0 1px rgba(234,229,219,0.1);padding:16px 14px;display:grid;gap:6px"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(17px,1.9vw,24px);color:#FFE0AE">1,710</div><div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(234,229,219,0.58)">notes</div></div>
+        <div style="background:#07080B;box-shadow:0 0 0 1px rgba(234,229,219,0.1);padding:16px 14px;display:grid;gap:6px"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(17px,1.9vw,24px);color:#FFE0AE">399</div><div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(234,229,219,0.58)">attacks</div></div>
+        <div style="background:#07080B;box-shadow:0 0 0 1px rgba(234,229,219,0.1);padding:16px 14px;display:grid;gap:6px"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(17px,1.9vw,24px);color:#FFE0AE">244.82<span style="font-size:0.6em;color:rgba(234,229,219,0.45)"> s</span></div><div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(234,229,219,0.58)">sounding</div></div>
+        <div style="background:#07080B;box-shadow:0 0 0 1px rgba(234,229,219,0.1);padding:16px 14px;display:grid;gap:6px"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(17px,1.9vw,24px);color:#FFE0AE">5.9<span style="font-size:0.6em;color:rgba(234,229,219,0.45)"> oct</span></div><div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(234,229,219,0.58)">C♯1 – B6</div></div>
+        <div style="background:#07080B;box-shadow:0 0 0 1px rgba(234,229,219,0.1);padding:16px 14px;display:grid;gap:6px"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(17px,1.9vw,24px);color:#FFE0AE">90.7<span style="font-size:0.6em;color:rgba(234,229,219,0.45)"> %</span></div><div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(234,229,219,0.58)">diatonic</div></div>
+    </div>
+
+    <article style="display:grid;gap:clamp(18px,2.4vw,30px);margin-bottom:clamp(76px,10vw,148px)">
+      <div style="display:grid;gap:13px;max-width:66ch">
+        <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(230,163,90,0.8)">01 &nbsp;/&nbsp; Proportion</div>
+        <h3 style="margin:0;font-weight:200;font-size:clamp(27px,4.2vw,54px);line-height:1.05;letter-spacing:-0.022em">The golden section keeps its appointment</h3>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">The prelude sounds for 244.82 seconds. Cut that span in golden proportion and the knife falls at 151.60. The most violent attack in the performance — the largest single-frame rise in spectral energy anywhere in four minutes — lands at 150.06. The error is 1.54 seconds: six-tenths of one percent of the piece.</p>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">The lower golden section, 93.82 seconds, is the stranger one, because there is nothing there. It is the emptiest ground in the work — the Lento spending its last breath before the Agitato — and the nearest boundary the harmony itself declares, measured by chroma novelty, sits at 93.2. The piece is loudest at one golden section and faintest at the other. Neither proportion is written in the score. Both are enacted in the playing.</p>
+      </div>
+      <viz-plate kind="phi" style="display:block;width:100%;height:clamp(280px,33vw,420px);border:1px solid rgba(234,229,219,0.1);background:rgba(255,255,255,0.012);border-radius:2px;overflow:hidden"></viz-plate>
+      <p style="margin:0;max-width:80ch;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;line-height:1.75;letter-spacing:0.02em;color:rgba(234,229,219,0.6)">Loudness envelope, mirrored. Gold dashed — the two golden sections of the sounding span. White — the loudest attack. Roman numerals mark section boundaries taken from chroma novelty. Drag anywhere to move the music.</p>
+    </article>
+
+    <article style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:clamp(24px,3.4vw,54px);align-items:center;margin-bottom:clamp(76px,10vw,148px)">
+      <div style="display:grid;gap:13px">
+        <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(230,163,90,0.8)">02 &nbsp;/&nbsp; Tonal centre</div>
+        <h3 style="margin:0;font-weight:200;font-size:clamp(27px,4.2vw,54px);line-height:1.05;letter-spacing:-0.022em">The tonic will not share</h3>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">Add up how long each of the twelve pitches actually sounds and the prelude turns out to be a monarchy. C♯ holds 29.3 % of all sounding time — half again as much as the dominant G♯ at 19.7 %, and more than the bottom seven pitches put together, which manage 21.1 % between them. Nothing else comes near it.</p>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">The bottom of the list is the stranger end. The seven notes of C♯ minor take 90.7 % of the sounding time; the five chromatic outsiders share the remaining 9.3 % between them. F — which is really E♯, the note that would turn this minor into a major — sounds for 0.20 % of the piece: eleven notes out of 1,710. For all its reputation as chromatic music, the prelude keeps almost entirely inside its own scale and gets its darkness from weight rather than from strange notes.</p>
+      </div>
+      <viz-plate kind="chroma" style="display:block;width:100%;height:clamp(330px,38vw,470px);border:1px solid rgba(234,229,219,0.1);background:rgba(255,255,255,0.012);border-radius:2px;overflow:hidden"></viz-plate>
+    </article>
+
+    <article style="display:grid;gap:clamp(18px,2.4vw,30px);margin-bottom:clamp(76px,10vw,148px)">
+      <div style="display:grid;gap:13px;max-width:66ch">
+        <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(230,163,90,0.8)">03 &nbsp;/&nbsp; Information</div>
+        <h3 style="margin:0;font-weight:200;font-size:clamp(27px,4.2vw,54px);line-height:1.05;letter-spacing:-0.022em">What the sound says, and what the notes say</h3>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">Treat each window as a probability distribution over twelve pitch classes and take its Shannon entropy. All twelve equally present reads 3.585 bits; a pure C♯ minor scale reads 2.807. Measured from the notes, this prelude averages 2.606 bits over ten-second windows — 72.7 % of the ceiling, and <em>below</em> the seven-note line. Its harmony is narrower than the scale it is written in, because the tonic takes so much of the room.</p>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">This is worth saying plainly, because measuring the same quantity from the <em>audio</em> spectrum instead gives 3.478 bits — 97 % saturation, a piece drowning in chromaticism. That reading is wrong. A piano string radiates a whole harmonic series, so a spectrum hears fifths and thirds nobody played, and every window fills up with pitches that are not in the score. The gap between 3.478 and 2.606 is the exact size of that illusion.</p>
+      </div>
+      <viz-plate kind="entropy" style="display:block;width:100%;height:clamp(260px,30vw,380px);border:1px solid rgba(234,229,219,0.1);background:rgba(255,255,255,0.012);border-radius:2px;overflow:hidden"></viz-plate>
+      <p style="margin:0;max-width:80ch;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;line-height:1.75;letter-spacing:0.02em;color:rgba(234,229,219,0.6)">Pitch-class entropy in four-second windows, measured from the notes. Gold dashed — log₂ 12, all twelve equally present; blue dashed — log₂ 7, a pure C♯ minor scale; dotted — the mean over ten-second windows. The blue ticks beneath the axis mark windows holding fewer than three pitch classes, where a distribution has nothing to measure; the line breaks across them.</p>
+    </article>
+
+    <article style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:clamp(24px,3.4vw,54px);align-items:start;margin-bottom:clamp(76px,10vw,148px)">
+      <div style="display:grid;gap:13px">
+        <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(230,163,90,0.8)">04 &nbsp;/&nbsp; Self-similarity</div>
+        <h3 style="margin:0;font-weight:200;font-size:clamp(27px,4.2vw,54px);line-height:1.05;letter-spacing:-0.022em">Where the piece rhymes exactly</h3>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">Take every half-second of the piece and compare its pitch-class content with every other by the angle between the two vectors. The bright diagonal is the trivial truth that a moment resembles itself. Everything off it is memory. The ribbons along the top and left edges count how many pitch classes are sounding, and the pale ticks mark the windows that hold only one.</p>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">The bright blocks come from thinness more than from repetition. Of the 490 half-second windows, 120 — a quarter of the piece — hold exactly one pitch class, and 106 of those 120 land on A, G♯ or C♯: the three notes of the opening bell. Two unisons on the same pitch match perfectly whatever surrounds them, so the prelude rhymes most exactly at the moments when it has least to say.</p>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">Measured block by block, the ranking runs against intuition. The section that rhymes with itself most is the coda, at a mean off-diagonal similarity of 0.561, because it says one thing over and over: 29 of its 34 unison windows are C♯. Second is the Agitato at 0.524 — a continuous chordal weave six pitch classes wide, where every bar overlaps its neighbours, and where not one window falls to a single pitch. Last, at 0.307, is the Lento. It alternates between bare octaves on A, on G♯ and on C♯, and those three vectors are mutually orthogonal: a moment of pure A has nothing whatever in common with a moment of pure G♯.</p>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">So the two ends of the piece do answer each other, and the plot shows why. The coda's similarity to the opening is 0.481, against 0.418 for the opening and the Agitato — a rhyme carried not by a returning theme but by a returning <em>texture</em>. Both ends empty out onto the same three pitches, and the bright corner four minutes from the start is the sound of the piece arriving back at bare octaves, having spent everything in between filling the space between them.</p>
+      </div>
+      <viz-plate kind="recurrence" style="display:block;width:100%;height:clamp(400px,46vw,560px);border:1px solid rgba(234,229,219,0.1);background:rgba(255,255,255,0.012);border-radius:2px;overflow:hidden"></viz-plate>
+    </article>
+
+    <article style="display:grid;gap:clamp(18px,2.4vw,30px);margin-bottom:clamp(76px,10vw,148px)">
+      <div style="display:grid;gap:13px;max-width:66ch">
+        <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(230,163,90,0.8)">05 &nbsp;/&nbsp; Rhythm</div>
+        <h3 style="margin:0;font-weight:200;font-size:clamp(27px,4.2vw,54px);line-height:1.05;letter-spacing:-0.022em">How the climax is actually built</h3>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">Two numbers per section, both straight off the note list. The gap between attacks: 0.896 s in the Lento, 0.256 in the Agitato, 0.244 through the culmination, 0.640 in Tempo I, 1.834 in the coda. And the notes struck per attack: 4.58, then 2.66, then 4.83, then 7.16, then 5.09.</p>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">Read them together and the architecture gives itself away. The Agitato runs at three and a half times the opening speed on the thinnest texture in the piece — two bare voices. The culmination keeps that speed and doubles the weight of every attack. Then Tempo I, the loudest music in the work, drops back to two and a half times slower than the Agitato and puts seven notes under every hammer-blow. The catastrophe is assembled by adding hands, and the tempo falls away as the weight arrives.</p>
+      </div>
+      <viz-plate kind="rhythm" style="display:block;width:100%;height:clamp(300px,34vw,420px);border:1px solid rgba(234,229,219,0.1);background:rgba(255,255,255,0.012);border-radius:2px;overflow:hidden"></viz-plate>
+      <p style="margin:0;max-width:80ch;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;line-height:1.75;letter-spacing:0.02em;color:rgba(234,229,219,0.6)">Blue — attacks per second in two-second windows. Gold — median inter-onset interval per eight seconds, plotted inverted so that faster is higher.</p>
+    </article>
+
+    <article style="display:grid;gap:clamp(18px,2.4vw,30px);margin-bottom:clamp(76px,10vw,148px)">
+      <div style="display:grid;gap:13px;max-width:66ch">
+        <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(230,163,90,0.8)">06 &nbsp;/&nbsp; Register</div>
+        <h3 style="margin:0;font-weight:200;font-size:clamp(27px,4.2vw,54px);line-height:1.05;letter-spacing:-0.022em">Six octaves, and a bell at the bottom of all of them</h3>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">The whole aligned score, drawn as a piano roll: time across, pitch up, one bar per note, coloured by distance from the tonic and shaded by how hard it was struck. The five notes outside C♯ minor are drawn outlined and a little taller — 235 bars out of 1,710, and you can count them.</p>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">The mean sounding pitch tells the arc: MIDI 59.5 in the Lento, 60.9 in the Agitato, 66.2 at the culmination — half an octave of lift — then 66.1 through Tempo I, and 57.0 in the coda. The piece ends lower than it began. And along the floor of the plot the same note keeps returning: C♯1, the lowest on the roll, struck twenty-two times between the sixth second and the two-hundred-and-thirty-fifth. Those strikes are spread unevenly rather than held as a pedal: eight fall in the Lento, only one in the whole Agitato, which goes forty-four seconds without the note at all. Six octaves get built on top of that note and taken away again, and it is always there to come back to.</p>
+      </div>
+      <viz-plate kind="roll" style="display:block;width:100%;height:clamp(280px,32vw,400px);border:1px solid rgba(234,229,219,0.1);background:rgba(255,255,255,0.012);border-radius:2px;overflow:hidden"></viz-plate>
+      <p style="margin:0;max-width:80ch;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;line-height:1.75;letter-spacing:0.02em;color:rgba(234,229,219,0.6)">Every note in the aligned score. Height is true pitch, C♯1 to B6; brightness is velocity; colour is distance from C♯ on the circle of fifths; outlined, taller bars are the five notes outside the scale. Drag to move the music.</p>
+    </article>
+
+    <article style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:clamp(24px,3.4vw,54px);align-items:center;margin-bottom:clamp(76px,10vw,148px)">
+      <div style="display:grid;gap:13px">
+        <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(230,163,90,0.8)">07 &nbsp;/&nbsp; Voice-leading</div>
+        <h3 style="margin:0;font-weight:200;font-size:clamp(27px,4.2vw,54px);line-height:1.05;letter-spacing:-0.022em">Violence built from the smoothest moves available</h3>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">Now that the notes are real, so are the chords: each of the 399 attacks is named from the pitches actually struck and their actual bass. The prelude turns out to live in a small room. The fourteen chords on this wheel carry 47.6 % of its 399 attacks, and the top three alone — C♯ in bare octaves, G♯ in bare octaves, and C♯ minor over E — carry nearly a fifth of the piece on their own.</p>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">The heaviest single edge is G♯ tipping into the diminished chord over D♯, taken ten times; then A into D⁷, and D⁷ back to G♯, eight each. All three sit in the dominant region, so the piece spends its time handing tension along rather than letting it resolve. That is the paradox in one image: traffic this local, sounding like catastrophe. What makes it enormous is the weight of each chord rather than the distance between them.</p>
+      </div>
+      <viz-plate kind="network" style="display:block;width:100%;height:clamp(340px,40vw,500px);border:1px solid rgba(234,229,219,0.1);background:rgba(255,255,255,0.012);border-radius:2px;overflow:hidden"></viz-plate>
+      <p style="margin:0;grid-column:1/-1;max-width:80ch;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;line-height:1.75;letter-spacing:0.02em;color:rgba(234,229,219,0.6)">Nodes are the fourteen most-visited chords, sized by the number of attacks spent there; edges are transitions taken between them, weighted by count. Bare octaves are named as unisons, which is what they are. Chord names come from the notes themselves, bass included. The gold ring follows the chord sounding now.</p>
+    </article>
+
+    <article style="display:grid;gap:clamp(18px,2.4vw,30px);margin-bottom:clamp(76px,10vw,148px)">
+      <div style="display:grid;gap:13px;max-width:66ch">
+        <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(230,163,90,0.8)">08 &nbsp;/&nbsp; Return</div>
+        <h3 style="margin:0;font-weight:200;font-size:clamp(27px,4.2vw,54px);line-height:1.05;letter-spacing:-0.022em">The bell comes back faster, and then stops coming back</h3>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">The opening figure — A, G♯, C♯ — can be found exactly, because the score is exact: search the lowest sounding voice for that succession and it turns up twenty times. Their spacing is the interesting part. Across the first half of the piece the statements sit a median 9.3 seconds apart; across the second half, 5.5. Fitted against elapsed time the gap shrinks by 0.054 seconds for every second that passes, so the bell tolls at a quickening rate through the whole span — an accelerando operating on the form rather than on the beat.</p>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">Then it stops. The twentieth statement falls at 184.7 seconds and there is not another one: the last 60.5 seconds, a quarter of the piece, carry none. What survives into the coda is the figure's final note by itself — twenty of the coda's twenty-five single-pitch-class windows are C♯. The bell accelerates towards the climax, and afterwards only its resting note is left ringing.</p>
+        <p style="margin:0;font-weight:300;font-size:clamp(15px,1.3vw,18px);line-height:1.68;color:rgba(234,229,219,0.66);text-wrap:pretty">The histogram underneath answers a different question: where the bass goes between one attack and the next. Motion by a third accounts for 42.7 % of the 398 moves, against 18.8 % for fifths and fourths. For a piece whose reputation rests on dominant-to-tonic weight, the bass line spends most of its life sliding by thirds.</p>
+      </div>
+      <viz-plate kind="returns" style="display:block;width:100%;height:clamp(360px,42vw,500px);border:1px solid rgba(234,229,219,0.1);background:rgba(255,255,255,0.012);border-radius:2px;overflow:hidden"></viz-plate>
+      <p style="margin:0;max-width:80ch;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;line-height:1.75;letter-spacing:0.02em;color:rgba(234,229,219,0.6)">Above — each gold marker is one statement of the motif in the lowest voice; the gold step curve is the wait until the next, plotted so that higher means sooner. Below — bass motion between consecutive attacks, by interval. Drag to move the music.</p>
+    </article>
+
+    <article style="display:grid;gap:clamp(20px,2.6vw,32px);border-top:1px solid rgba(234,229,219,0.12);padding-top:clamp(30px,4vw,54px)">
+      <div style="display:grid;gap:13px;max-width:66ch">
+        <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(230,163,90,0.8)">In sum</div>
+        <h3 style="margin:0;font-weight:200;font-size:clamp(26px,3.6vw,46px);line-height:1.08;letter-spacing:-0.02em">Nine things the score turned out to be doing</h3>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:1px">
+        <div style="background:#07080B;box-shadow:0 0 0 1px rgba(234,229,219,0.1);padding:clamp(16px,1.8vw,22px);display:grid;gap:10px;align-content:start">
+          <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(19px,2.2vw,28px);color:#FFE0AE;line-height:1">29.3<span style="font-size:0.55em;color:rgba(234,229,219,0.5)"> %</span></div>
+          <div style="font-weight:300;font-size:clamp(14px,1.15vw,16px);line-height:1.55;color:rgba(234,229,219,0.66);text-wrap:pretty">of all sounding time belongs to C♯ alone — more than the seven least-used pitches put together, which manage 21.1 % between them.</div>
+        </div>
+        <div style="background:#07080B;box-shadow:0 0 0 1px rgba(234,229,219,0.1);padding:clamp(16px,1.8vw,22px);display:grid;gap:10px;align-content:start">
+          <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(19px,2.2vw,28px);color:#FFE0AE;line-height:1">90.7<span style="font-size:0.55em;color:rgba(234,229,219,0.5)"> %</span></div>
+          <div style="font-weight:300;font-size:clamp(14px,1.15vw,16px);line-height:1.55;color:rgba(234,229,219,0.66);text-wrap:pretty">of the piece stays inside the seven notes of C♯ minor. F, the note that would turn the minor major, sounds for 0.20 %: eleven notes out of 1,710.</div>
+        </div>
+        <div style="background:#07080B;box-shadow:0 0 0 1px rgba(234,229,219,0.1);padding:clamp(16px,1.8vw,22px);display:grid;gap:10px;align-content:start">
+          <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(19px,2.2vw,28px);color:#FFE0AE;line-height:1">2.606<span style="font-size:0.55em;color:rgba(234,229,219,0.5)"> bits</span></div>
+          <div style="font-weight:300;font-size:clamp(14px,1.15vw,16px);line-height:1.55;color:rgba(234,229,219,0.66);text-wrap:pretty">of pitch-class entropy, 72.7 % of the twelve-note ceiling and below the 2.807 of a plain C♯ minor scale. The tonic takes too much of the room for anything else.</div>
+        </div>
+        <div style="background:#07080B;box-shadow:0 0 0 1px rgba(234,229,219,0.1);padding:clamp(16px,1.8vw,22px);display:grid;gap:10px;align-content:start">
+          <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(19px,2.2vw,28px);color:#FFE0AE;line-height:1">7.16<span style="font-size:0.55em;color:rgba(234,229,219,0.5)"> notes</span></div>
+          <div style="font-weight:300;font-size:clamp(14px,1.15vw,16px);line-height:1.55;color:rgba(234,229,219,0.66);text-wrap:pretty">under every attack in Tempo I, against 2.66 in the Agitato — while the attacks themselves slow from 0.256 s apart to 0.640. The climax arrives by thickening.</div>
+        </div>
+        <div style="background:#07080B;box-shadow:0 0 0 1px rgba(234,229,219,0.1);padding:clamp(16px,1.8vw,22px);display:grid;gap:10px;align-content:start">
+          <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(19px,2.2vw,28px);color:#FFE0AE;line-height:1">120<span style="font-size:0.55em;color:rgba(234,229,219,0.5)"> of 490</span></div>
+          <div style="font-weight:300;font-size:clamp(14px,1.15vw,16px);line-height:1.55;color:rgba(234,229,219,0.66);text-wrap:pretty">half-second windows hold exactly one pitch class, and 106 of those land on A, G♯ or C♯. The piece rhymes most exactly where it has least to say.</div>
+        </div>
+        <div style="background:#07080B;box-shadow:0 0 0 1px rgba(234,229,219,0.1);padding:clamp(16px,1.8vw,22px);display:grid;gap:10px;align-content:start">
+          <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(19px,2.2vw,28px);color:#FFE0AE;line-height:1">20<span style="font-size:0.55em;color:rgba(234,229,219,0.5)"> returns</span></div>
+          <div style="font-weight:300;font-size:clamp(14px,1.15vw,16px);line-height:1.55;color:rgba(234,229,219,0.66);text-wrap:pretty">of the bell figure A–G♯–C♯ in the lowest voice, the gaps contracting from a median 9.3 s to 5.5 s — then nothing at all for the final 60.5 s.</div>
+        </div>
+        <div style="background:#07080B;box-shadow:0 0 0 1px rgba(234,229,219,0.1);padding:clamp(16px,1.8vw,22px);display:grid;gap:10px;align-content:start">
+          <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(19px,2.2vw,28px);color:#FFE0AE;line-height:1">42.7<span style="font-size:0.55em;color:rgba(234,229,219,0.5)"> %</span></div>
+          <div style="font-weight:300;font-size:clamp(14px,1.15vw,16px);line-height:1.55;color:rgba(234,229,219,0.66);text-wrap:pretty">of bass moves between attacks go by a third, against 18.8 % by fifth or fourth. The famous dominant weight sits on a bass line that mostly slides in thirds.</div>
+        </div>
+        <div style="background:#07080B;box-shadow:0 0 0 1px rgba(234,229,219,0.1);padding:clamp(16px,1.8vw,22px);display:grid;gap:10px;align-content:start">
+          <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(19px,2.2vw,28px);color:#FFE0AE;line-height:1">1.54<span style="font-size:0.55em;color:rgba(234,229,219,0.5)"> s</span></div>
+          <div style="font-weight:300;font-size:clamp(14px,1.15vw,16px);line-height:1.55;color:rgba(234,229,219,0.66);text-wrap:pretty">between the loudest attack in the performance and the golden section of its own sounding duration — 0.63 % of the piece.</div>
+        </div>
+        <div style="background:#07080B;box-shadow:0 0 0 1px rgba(234,229,219,0.1);padding:clamp(16px,1.8vw,22px);display:grid;gap:10px;align-content:start">
+          <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:clamp(19px,2.2vw,28px);color:#FFE0AE;line-height:1">5.58<span style="font-size:0.55em;color:rgba(234,229,219,0.5)"> oct</span></div>
+          <div style="font-weight:300;font-size:clamp(14px,1.15vw,16px);line-height:1.55;color:rgba(234,229,219,0.66);text-wrap:pretty">at its widest, at 164 s. It opens from three bare octaves to nearly six, and closes lower than it began.</div>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div style="opacity:{{ barOp }};transform:translateY({{ barY }});transition:opacity 380ms ease, transform 380ms ease;position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;align-items:center;gap:14px;padding:10px clamp(14px,3vw,28px);background:rgba(9,10,14,0.92);border-top:1px solid rgba(234,229,219,0.12);backdrop-filter:blur(14px);pointer-events:{{ barPE }}">
+    <button onClick="{{ toggle }}" style="width:38px;height:38px;flex:none;display:grid;place-items:center;background:rgba(255,224,174,0.08);border:1px solid rgba(255,224,174,0.38);border-radius:50%;color:#FFE0AE;font-size:11px;cursor:pointer">{{ playGlyph }}</button>
+    <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;letter-spacing:0.04em;color:rgba(234,229,219,0.85);min-width:52px"><span ref="{{ outTime2 }}">0:00</span></div>
+    <div ref="{{ outSection2 }}" style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(230,163,90,0.85);flex:1">I · Lento</div>
+    <a href="#analysis" style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;border:none">↑ top</a>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;isolateHz&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:350,&quot;min&quot;:150,&quot;max&quot;:900,&quot;step&quot;:10,&quot;unit&quot;:&quot;Hz&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Isolate mode&quot;},&quot;chordThreshold&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.42,&quot;min&quot;:0.22,&quot;max&quot;:0.7,&quot;step&quot;:0.01,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Stage&quot;},&quot;trailDensity&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.3,&quot;max&quot;:2.2,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Stage&quot;}}">
+class Component extends DCLogic {
+  state = {
+    playing: false, started: false, isolate: false, wide: true, showBar: false,
+    narrow: false, chipsOpen: false, ready: false,
+    layers: { field: true, bell: true, fifths: true, chord: true, helix: true, trails: true },
+  };
+
+  constructor(p) {
+    super(p);
+    this.rootRef = React.createRef();
+    this.audioRef = React.createRef();
+    this.stageRef = React.createRef();
+    ['outTime', 'outTime2', 'outSection', 'outSection2', 'outChord', 'outLoud', 'outFrac', 'outPhi'].forEach(k => { this[k] = React.createRef(); });
+    this.strikeIdx = -1;
+  }
+
+  componentDidMount() {
+    const fit = () => this.setState({ wide: window.innerWidth > 1000, narrow: window.innerWidth < 780 });
+    fit();
+    this._onResize = fit;
+    window.addEventListener('resize', this._onResize);
+
+    const root = this.rootRef.current;
+    if (root) root.addEventListener('plate-seek', (e) => this.seek(e.detail.t));
+
+    const hero = root && root.querySelector('harmonic-stage');
+    if (hero) {
+      this._io = new IntersectionObserver(en => this.setState({ showBar: !en[0].isIntersecting }), { threshold: 0.12 });
+      this._io.observe(hero);
+    }
+
+    this._wire = setInterval(() => {
+      const st = this.stageRef.current;
+      if (st && st.attach && this.audioRef.current) { st.attach(this.audioRef.current); this.applyLayers(); clearInterval(this._wire); }
+    }, 120);
+
+    const a = this.audioRef.current;
+    if (a) {
+      if (a.readyState >= 3) this.state.ready = true;
+      a.addEventListener('canplay', () => this.setState({ ready: true }));
+      a.addEventListener('play', () => this.setState({ playing: true, started: true }));
+      a.addEventListener('pause', () => this.setState({ playing: false }));
+      a.addEventListener('ended', () => this.setState({ playing: false }));
+    }
+    const loop = () => { this._raf = requestAnimationFrame(loop); this.tick(); };
+    this._raf = requestAnimationFrame(loop);
+  }
+
+  componentWillUnmount() {
+    cancelAnimationFrame(this._raf);
+    clearInterval(this._wire);
+    window.removeEventListener('resize', this._onResize);
+    if (this._io) this._io.disconnect();
+  }
+
+  /* ---- per-frame readouts, written straight to the DOM ---- */
+  tick() {
+    const a = this.audioRef.current; if (!a) return;
+    const t = a.currentTime;
+    if (window.__preludePlates) window.__preludePlates.setTime(t);
+    const P = window.__preludeFacts;
+    const mm = Math.floor(t / 60), ss = String(Math.floor(t % 60)).padStart(2, '0');
+    const time = mm + ':' + ss;
+    const set = (ref, v) => { const el = this[ref].current; if (el && el.textContent !== v) el.textContent = v; };
+    set('outTime', time); set('outTime2', time);
+    if (!P) return;
+    const s = P.sectionAt(t);
+    const lab = s ? s.roman + ' · ' + s.name : '—';
+    set('outSection', lab); set('outSection2', lab);
+    set('outChord', P.chordAt(t));
+    set('outLoud', P.envAt(t).toFixed(2));
+    set('outFrac', (t / P.duration * 100).toFixed(1) + ' %');
+    const marks = P.marks;
+    let note = '';
+    if (Math.abs(t - marks.phiHigh) < 3.2) note = '\u2500 \u03c6 \u00b7 0.618 of the span';
+    else if (Math.abs(t - marks.phiLow) < 3.2) note = '\u2500 \u03c6 \u00b7 0.382 of the span';
+    else if (Math.abs(t - marks.loudestAttack) < 1.4) note = '\u2500 loudest attack';
+    set('outPhi', note);
+  }
+
+  /* ---- transport ---- */
+  audioGraph() {
+    if (this.actx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    try {
+      this.actx = new AC();
+      this.src = this.actx.createMediaElementSource(this.audioRef.current);
+      this.dry = this.actx.createGain(); this.wet = this.actx.createGain();
+      this.dry.gain.value = 1; this.wet.gain.value = 0;
+      const mk = (f, q) => { const b = this.actx.createBiquadFilter(); b.type = 'bandpass'; b.frequency.value = f; b.Q.value = q; return b; };
+      const hz = this.props.isolateHz ?? 350;
+      this.b1 = mk(hz, 1.1); this.b2 = mk(hz, 1.4);
+      this.src.connect(this.dry); this.dry.connect(this.actx.destination);
+      this.src.connect(this.b1); this.b1.connect(this.b2); this.b2.connect(this.wet); this.wet.connect(this.actx.destination);
+    } catch (e) { this.actx = null; }
+  }
+
+  toggle = () => {
+    const a = this.audioRef.current; if (!a) return;
+    this.audioGraph();
+    if (this.actx && this.actx.state === 'suspended') this.actx.resume();
+    if (a.paused) { const p = a.play(); if (p && p.catch) p.catch(() => {}); } else a.pause();
+  };
+
+  seek = (t) => {
+    const a = this.audioRef.current; if (!a) return;
+    a.currentTime = Math.max(0, Math.min((a.duration || 255) - 0.05, t));
+    if (a.paused) this.toggle();
+  };
+
+  step = (dir) => {
+    const P = window.__preludeFacts; if (!P) return;
+    const list = P.strikes, t = this.audioRef.current.currentTime;
+    let i = dir > 0 ? list.findIndex(x => x > t + 0.4) : -1;
+    if (dir < 0) { for (let k = list.length - 1; k >= 0; k--) if (list[k] < t - 0.9) { i = k; break; } }
+    if (i < 0) i = dir > 0 ? 0 : list.length - 1;
+    if (!this.state.isolate) this.toggleIsolate();
+    this.seek(Math.max(0, list[i] - 0.28));
+  };
+  nextStrike = () => this.step(1);
+  prevStrike = () => this.step(-1);
+
+  toggleIsolate = () => {
+    const on = !this.state.isolate;
+    this.setState({ isolate: on });
+    this.audioGraph();
+    if (!this.actx) return;
+    const now = this.actx.currentTime;
+    this.dry.gain.cancelScheduledValues(now); this.wet.gain.cancelScheduledValues(now);
+    this.dry.gain.linearRampToValueAtTime(on ? 0.07 : 1, now + 0.35);
+    this.wet.gain.linearRampToValueAtTime(on ? 2.6 : 0, now + 0.35);
+  };
+
+  /* ---- layers ---- */
+  applyLayers() {
+    const st = this.stageRef.current; if (!st || !st.setLayer) return;
+    Object.entries(this.state.layers).forEach(([k, v]) => st.setLayer(k, v));
+    st.chordThresh = this.props.chordThreshold ?? 0.42;
+    st.trailScale = this.props.trailDensity ?? 1;
+  }
+  flip = (k) => () => {
+    const layers = { ...this.state.layers, [k]: !this.state.layers[k] };
+    this.setState({ layers }, () => this.applyLayers());
+  };
+  resetCam = () => { const st = this.stageRef.current; if (st && st.resetCamera) st.resetCamera(); };
+
+  renderVals() {
+    const L = this.state.layers;
+    const op = v => (v ? 1 : 0.32);
+    return {
+      rootRef: this.rootRef, audioRef: this.audioRef, stageRef: this.stageRef,
+      outTime: this.outTime, outTime2: this.outTime2, outSection: this.outSection,
+      outSection2: this.outSection2, outChord: this.outChord, outLoud: this.outLoud,
+      outFrac: this.outFrac, outPhi: this.outPhi,
+      toggle: this.toggle, resetCam: this.resetCam,
+      nextStrike: this.nextStrike, prevStrike: this.prevStrike, toggleIsolate: this.toggleIsolate,
+      playGlyph: this.state.playing ? '❚❚' : '▶',
+      playLabel: this.state.started && !this.state.ready ? 'loading…'
+        : (this.state.started ? (this.state.playing ? 'playing' : 'resume') : 'sound the bell'),
+      narrow: this.state.narrow,
+      showChips: !this.state.narrow || this.state.chipsOpen,
+      chipsGlyph: this.state.chipsOpen ? 'LAYERS ×' : 'LAYERS',
+      toggleChips: () => this.setState(s => ({ chipsOpen: !s.chipsOpen })),
+      heroOp: this.state.playing ? 0.32 : 1,
+      isoOp: this.state.isolate ? 1 : 0.42,
+      wide: this.state.wide,
+      barOp: this.state.showBar ? 1 : 0,
+      barY: this.state.showBar ? '0px' : '100%',
+      barPE: this.state.showBar ? 'auto' : 'none',
+      tField: this.flip('field'), tBell: this.flip('bell'), tFifths: this.flip('fifths'),
+      tChord: this.flip('chord'), tHelix: this.flip('helix'), tTrails: this.flip('trails'),
+      opField: op(L.field), opBell: op(L.bell), opFifths: op(L.fifths),
+      opChord: op(L.chord), opHelix: op(L.helix), opTrails: op(L.trails),
+    };
+  }
+}
+
+</script>
+</body>
+</html>
